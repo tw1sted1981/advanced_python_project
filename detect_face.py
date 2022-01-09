@@ -30,7 +30,6 @@ def opencvPointToNukePoint(point, image_size):
     position within nuke coordinate system where 0,0 is in the bottom left
     whereas opencv is in the top left
     """
-
     return [ point[0], image_size[1] - point[1] ]
 
 def nukeBuildCropNode(bottomleft_point, topright_point):
@@ -41,7 +40,6 @@ box {{ {} {} {} {} }}
 '''.format(bottomleft_point[0], bottomleft_point[1], topright_point[0], topright_point[1])
     print(crop_node)
     return crop_node
-
 # below is the animation format for a nuke crop node
 #'''box {{{{curve x2 10 x20 0}} {{curve x2 10 x20 0}} {{curve x2 30 x20 0}} {{curve x2 30 x20 0}}}}'''
 
@@ -93,83 +91,61 @@ tracks {{ {{ 1 31 5 }}
 '''
 
 
-#fs = fileseq.FrameSet('1001-1100:7')
-#for f in fs:
-#    print (f)
-
-
-
-
 # construct the argument parser and parse the arguments
 ap = argparse.ArgumentParser()
 ap.add_argument("-f", "--folder", required=True, help="Path to the directory with")
 args = vars(ap.parse_args())
 
 seqs = fileseq.findSequencesOnDisk(args["folder"])[0] # grab just the first image sequence for now
+frame_range = seqs.frameRange().split('-')
+print(frame_range)
+
+#raise Exception('end here')
 pprint(seqs)
 print(seqs.frameRange())
 print(seqs.frame(1010))
 print(dir(seqs))
 
-frame_range_ = seqs.frameRange().split('-')
-print(frame_range_)
 
-#raise Exception('end here')
 
-file_list = [seqs[idx] for idx, fr in enumerate(seqs.frameSet())]
-pprint(file_list)
+#file_list = [seqs[idx] for idx, fr in enumerate(seqs.frameSet())]
+#pprint(file_list)
 
 #print(seqs[0].FrameSet())
 
-frame = 1010
-image = cv2.imread(seqs.frame(frame))
-scale_percent = 20 # percent of original size
-width = int(image.shape[1] * scale_percent / 100)
-height = int(image.shape[0] * scale_percent / 100)
-dim = (width, height)
-# resize image
-resized = cv2.resize(image, dim, interpolation = cv2.INTER_AREA)
-print('{},{}'.format(resized.shape[1], resized.shape[0]))
-#cv2.imshow("My image", resized)
+for frame in range(int(frame_range[0]), int(frame_range[1])+1):
+    print('Frame :{}'.format(frame))
+    image = cv2.imread(seqs.frame(frame))
 
-# find landmarks
-# create the detector, using default weights
-detector = MTCNN()
-# detect faces in the image
-faces = detector.detect_faces(resized)
-pprint(faces)
+    scale_percent = 20 # percent of original size
+    width = int(image.shape[1] * scale_percent / 100)
+    height = int(image.shape[0] * scale_percent / 100)
+    dim = (width, height)
+    # resize image
+    resized = cv2.resize(image, dim, interpolation = cv2.INTER_AREA)
+    print('{},{}'.format(resized.shape[1], resized.shape[0]))
 
-#loop through results
-for face_detection in faces:
-    # compute the (x, y)-coordinates of the bounding box for the
-    # object
-    print(face_detection['box'])
-    startX, startY, width, height = face_detection['box']
-    cv2.rectangle(resized, (startX, startY), (startX + width, startY + height),
-        (0, 0, 255), 1) 
+    # find landmarks
+    # create the detector, using default weights
+    detector = MTCNN()
+    # detect faces in the image
+    faces = detector.detect_faces(resized)
+    pprint(faces)
 
-    cv2.imshow("My image", resized)
-    cv2.waitKey(0)
+    #loop through results
+    for face_detection in faces:
+        # compute the (x, y)-coordinates of the bounding box for the
+        startX, startY, width, height = face_detection['box']
+        cv2.rectangle(resized, (startX, startY), (startX + width, startY + height),
+            (0, 0, 255), 1) 
+        cv2.imshow("Image with face drawn", resized)
+        cv2.waitKey(0)
 
-    topleft = opencvPointToNukePoint( [startX , startY + height], [resized.shape[1], resized.shape[0]] ) 
-    topright =  opencvPointToNukePoint( [startX + width, startY], [resized.shape[1], resized.shape[0]] ) 
-
-    print( opencvPointToNukePoint( [startX , startY + height], [resized.shape[1], resized.shape[0]] ) )
-    print( opencvPointToNukePoint( [startX + width, startY], [resized.shape[1], resized.shape[0]] ) )
-    nukeBuildCropNode(topleft, topright)
-
-
-   
-#nukeCrop()
-
-    #box = detections[0, 0, i, 3:7] * np.array([w, h, w, h])
-    #(startX, startY, endX, endY) = box.astype("int")
-
-    # draw the bounding box of the face along with the associated
-    # probability
-    #cv2.rectangle(image, (startX, startY), (endX, endY),
-    #    (0, 0, 255), 2) 
-
+        topleft = opencvPointToNukePoint( [startX , startY + height], [resized.shape[1], resized.shape[0]] ) 
+        topright =  opencvPointToNukePoint( [startX + width, startY], [resized.shape[1], resized.shape[0]] ) 
+        #print( opencvPointToNukePoint( [startX , startY + height], [resized.shape[1], resized.shape[0]] ) )
+        #print( opencvPointToNukePoint( [startX + width, startY], [resized.shape[1], resized.shape[0]] ) )
+        nukeBuildCropNode(topleft, topright)
 
 
 # import folder contents of folder.
