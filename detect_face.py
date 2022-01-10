@@ -1,15 +1,16 @@
 #******************************************************************************
 # content       = Face detection
 #               Should be able to point this at a folder with an image sequence
-#               and it will find the face and return the text to create a 
-#               crop node within nuke.
+#               and it will find the face and return the text to create an 
+#               animated crop node within nuke. 
 #                 
 #
 # version       = 0.0.1
-# date          = 2022-01-04
+# date          = 2022-01-08
 #
 # dependencies  = 
-# todos         =
+# todos         = NEXT - build point class, with functions to convert coordinate 
+#               origin axis.
 #
 # author        = Chris Forrester <chrisforrester.tv@gmail.com>
 #******************************************************************************
@@ -152,6 +153,10 @@ for frame in range(int(frame_range[0]), int(frame_range[1])+1):
 # process first frame for landmarks and store it.
 # draw on frame these landmarks
 # create nuke crop to match bounding box
-# create tracker with tracker animation
+
+# QS how do I keep track of a face it has found when there are others around it? - Facial Recognition  FaceNet
+
+# possibly create tracker4 node with tracker animation matching landmarks.
+
 
 
