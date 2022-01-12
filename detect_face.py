@@ -93,53 +93,44 @@ ap.add_argument("-f", "--folder", required=True, help="Path to the directory wit
 args = vars(ap.parse_args())
 
 face = loader.FrameHandler(args["folder"])
-
 face.print_sequences()
-face.select_sequence(0)
-
-face.load_all_frames()
-face.status()
-
-
-raise Exception('END')
+face.select_sequence(1)
+face.load_all_frames(20, 20)
 
 for frame in range(face.first_frame(), face.last_frame(),):
     print('Frame :{}'.format(frame))
     image = face.image(frame)
 
-    scale_percent = 20
-    img_width = int(image.shape[1] * scale_percent / 100)
-    img_height = int(image.shape[0] * scale_percent / 100)
-    dim = (img_width, img_height)
-
-    resized = cv2.resize(image, dim, interpolation = cv2.INTER_AREA)
+    img_width = face.image_dimensions(frame)[0]
+    img_height = face.image_dimensions(frame)[1]
 
     # find landmarks
     # create the detector, using default weights
     detector = MTCNN()
     # detect faces in the image
-    faces = detector.detect_faces(resized)
+    faces = detector.detect_faces(image)
     pprint(faces)
-
     #loop through results
     for face_detection in faces:
         # compute the (x, y)-coordinates of the bounding box for the
         startX, startY, width, height = face_detection['box']
-        
+
+
         top_left      = Point(startX, startY, img_width, img_height)
         bottom_right  = Point(startX + width, startY + height, img_width, img_height)
         top_left.status()
         bottom_right.status()
+
         print(top_left.point_in_nuke())
         print(bottom_right.point_in_nuke())
         print('\n')
-        #nukeBuildCropNode(top_left, bottom_right)
         nukeBuildCropNode(top_left.point_in_nuke(), bottom_right.point_in_nuke())
+        
         # draw box around face
-        cv2.rectangle(resized, (startX, startY), (startX + width, startY + height),
+        cv2.rectangle(image, (startX, startY), (startX + width, startY + height),
             (0, 0, 255), 1) 
-        cv2.imshow("Image with face drawn", resized)
-        cv2.waitKey(0)
+        cv2.imshow("Image with face drawn", image)
+        cv2.waitKey(20)
 
 
 

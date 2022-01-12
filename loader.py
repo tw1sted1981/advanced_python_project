@@ -22,6 +22,10 @@ class FrameHandler():
         for index, sequence in enumerate(fileseq.findSequencesOnDisk(self.path_to_image_folder)):
             print('{:<3} - {}'.format(index, sequence[index]))
 
+    def user_select_sequence(self):
+        # allow the user to select the sequence the object will work with
+        pass
+
     def select_sequence(self, sequence_index):
         self.sequence_name = str(sequence_index)
         # when sequence is selected updated the inital bits of the dict
@@ -40,17 +44,30 @@ class FrameHandler():
     def last_frame(self,):
         return int(self.file_sequence_data[self.sequence_name]['frame_range'][1])
 
-    def load_frame(self, frame):
+    def load_frame(self, frame, scale_x = 100, scale_y = 100):
         filepath = self.file_sequence_data[self.sequence_name]['file_sequence'].frame(frame)
+        image = cv2.imread(filepath)
 
-        print('loading frame {:08}'.format(frame))
+        # resize image based on arguments passed
+        img_width = int(image.shape[1] * scale_x / 100)
+        img_height = int(image.shape[0] * scale_y / 100)
+        dim = (img_width, img_height)
+        resized_image = cv2.resize(image, dim, interpolation = cv2.INTER_AREA)  
+
+        print('loading frame {:08} - scale_x ={}, scale_y ={}'.format(frame, scale_x, scale_y))
         self.file_sequence_data[self.sequence_name][frame]['filepath'] = filepath  
-        self.file_sequence_data[self.sequence_name][frame]['image'] = cv2.imread(filepath)  
+        self.file_sequence_data[self.sequence_name][frame]['image'] = resized_image
+        self.file_sequence_data[self.sequence_name][frame]['width'] = img_width   
+        self.file_sequence_data[self.sequence_name][frame]['height'] = img_height     
 
-    def load_all_frames(self):
+    def load_all_frames(self, scale_x = 100, scale_y = 100):
         for frame in range(self.first_frame(), self.last_frame()):
-            self.load_frame(frame)
+            self.load_frame(frame, scale_x, scale_y)
 
     def image(self, frame):
         return self.file_sequence_data[self.sequence_name][frame]['image'] 
-        
+
+    def image_dimensions(self, frame):
+        return [self.file_sequence_data[self.sequence_name][frame]['width'], 
+            self.file_sequence_data[self.sequence_name][frame]['height'],
+            ]
