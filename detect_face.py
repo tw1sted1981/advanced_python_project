@@ -94,9 +94,18 @@ args = vars(ap.parse_args())
 
 face = loader.FrameHandler(args["folder"])
 
-for frame in range(int(face.frame_range[0]), int(face.frame_range[1])+1):
+face.print_sequences()
+face.select_sequence(0)
+
+face.load_all_frames()
+face.status()
+
+
+raise Exception('END')
+
+for frame in range(face.first_frame(), face.last_frame(),):
     print('Frame :{}'.format(frame))
-    image = face.file_sequence_data[frame]['image'] #cv2.imread(seqs.frame(frame))
+    image = face.image(frame)
 
     scale_percent = 20
     img_width = int(image.shape[1] * scale_percent / 100)
