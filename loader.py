@@ -61,7 +61,7 @@ class FrameHandler():
         self.file_sequence_data[self.sequence_name][frame]['height'] = img_height     
 
     def load_all_frames(self, scale_x = 100, scale_y = 100):
-        for frame in range(self.first_frame(), self.last_frame()):
+        for frame in range(self.first_frame(), self.last_frame()+1):
             self.load_frame(frame, scale_x, scale_y)
 
     def image(self, frame):
@@ -69,5 +69,5 @@ class FrameHandler():
 
     def image_dimensions(self, frame):
         return [self.file_sequence_data[self.sequence_name][frame]['width'], 
-            self.file_sequence_data[self.sequence_name][frame]['height'],
+                self.file_sequence_data[self.sequence_name][frame]['height'],
             ]
