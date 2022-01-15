@@ -8,14 +8,10 @@ nuke_config_json_file = os.path.join(os.path.dirname(__file__), 'nuke_config.jso
 
 
 # first value is frame number (int) the second is the value a float
-frame_value = """
- x{} {} 
-"""
+frame_value = ' x{} {} '
 
 # nuke animation curve format ready to take a string formatted using frame_value
-animation_curve = """
-curve {{ {} }}
-"""
+animation_curve = '{{curve {} }}'
 
 # ready for 4 curve strings or 4 floats to be inserted within box
 # represents bottom left point and top right point
