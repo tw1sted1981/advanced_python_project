@@ -21,7 +21,7 @@ curve {{ {} }}
 # represents bottom left point and top right point
 nuke_crop = """
 Crop {{
-    box{{ {} {} {} {} }}
+    box {{ {} {} {} {} }}
     name Crop1
 }}  
 """
