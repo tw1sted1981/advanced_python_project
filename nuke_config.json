@@ -1,5 +1,5 @@
 {
-    "animation_curve": "\ncurve {{ {} }}\n",
-    "frame_value": "\n x{} {} \n",
-    "nuke_crop": "\nCrop {{\n    box {{ {} {} {} {} }}\n    name Crop1\n}}  \n"
+    "animation_curve": "{{curve {} }}",
+    "nuke_crop": "\nCrop {{\n    box {{ {} {} {} {} }}\n    name Crop1\n}}  \n",
+    "frame_value": " x{} {} "
 }

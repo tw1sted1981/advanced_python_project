@@ -3,6 +3,7 @@
 # create a cache all function
 # merge sequence and frame range under the same dict as everything else
 
+import logging
 from collections import defaultdict
 from pprint import pprint
 
@@ -46,23 +47,29 @@ class FrameHandler():
 
     def load_frame(self, frame, scale_x = 100, scale_y = 100):
         filepath = self.file_sequence_data[self.sequence_name]['file_sequence'].frame(frame)
-        image = cv2.imread(filepath)
+        image = resized_image = cv2.imread(filepath)
+        img_height, img_width, _, = image.shape
 
-        # resize image based on arguments passed
-        img_width = int(image.shape[1] * scale_x / 100)
-        img_height = int(image.shape[0] * scale_y / 100)
-        dim = (img_width, img_height)
-        resized_image = cv2.resize(image, dim, interpolation = cv2.INTER_AREA)  
+        if (scale_x != 100) and (scale_y != 100):
+            # resize image based on arguments passed
+            img_width = int(image.shape[1] * scale_x / 100)
+            img_height = int(image.shape[0] * scale_y / 100)
+            dim = (img_width, img_height)
+            resized_image = cv2.resize(image, dim, interpolation = cv2.INTER_AREA)  
 
-        print('loading frame {:08} - scale_x ={}, scale_y ={}'.format(frame, scale_x, scale_y))
+        logging.info('loading frame {:08} - scale_x ={}, scale_y ={}'.format(frame, scale_x, scale_y))
         self.file_sequence_data[self.sequence_name][frame]['filepath'] = filepath  
         self.file_sequence_data[self.sequence_name][frame]['image'] = resized_image
-        self.file_sequence_data[self.sequence_name][frame]['width'] = img_width   
         self.file_sequence_data[self.sequence_name][frame]['height'] = img_height     
+        self.file_sequence_data[self.sequence_name][frame]['width'] = img_width   
 
     def load_all_frames(self, scale_x = 100, scale_y = 100):
         for frame in range(self.first_frame(), self.last_frame()+1):
             self.load_frame(frame, scale_x, scale_y)
+
+    def remove_image(self, frame):
+        self.file_sequence_data[self.sequence_name][frame]['image'] = None        
+        logging.info('removing image on frame {:08}'.format(frame,))
 
     def image(self, frame):
         return self.file_sequence_data[self.sequence_name][frame]['image'] 
