@@ -13,6 +13,9 @@
 # author        = Chris Forrester <chrisforrester.tv@gmail.com>
 #******************************************************************************
 
+from typing import Tuple
+
+
 class Point():
     """
     Class to represent a point in cartesian coordinates.  Origin (0,0) assumed to be 
@@ -32,9 +35,10 @@ class Point():
     def status(self):
         print('point position ({},{}) on a plane of {}x{}'.format(self.x, self.y, self.width, self.height))
 
-    def point_in_nuke(self):
+    def point_in_nuke(self) -> Tuple:
         """ 0,0 top left converted to 0,0 bottom left"""
-        return self.x, self.height - self.y 
+        y = self.height - self.y
+        return self.x, y
 
 
 if __name__ == '__main__':

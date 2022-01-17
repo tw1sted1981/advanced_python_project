@@ -9,8 +9,8 @@ from pprint import pprint
 
 import cv2
 import fileseq
-from mtcnn import MTCNN
-import numpy as np
+#from mtcnn import MTCNN
+#import numpy as np
 
 class FrameHandler():
     # add an option to resize in the loader for processing
@@ -25,7 +25,9 @@ class FrameHandler():
 
     def user_select_sequence(self):
         # allow the user to select the sequence the object will work with
-        pass
+        self.print_sequences()
+        sequence_index = int(input('type sequence to use : '))
+        self.select_sequence(sequence_index)
 
     def select_sequence(self, sequence_index):
         self.sequence_name = str(sequence_index)
@@ -78,3 +80,14 @@ class FrameHandler():
         return [self.file_sequence_data[self.sequence_name][frame]['width'], 
                 self.file_sequence_data[self.sequence_name][frame]['height'],
             ]
+
+    def add_mtcnn_data(self, frame, mtcnn_data):
+        pprint(mtcnn_data)
+        self.file_sequence_data[self.sequence_name][frame]['mtcnn'] = mtcnn_data 
+
+    def get_mtcnn_data(self, frame): 
+        return self.file_sequence_data[self.sequence_name][frame]['mtcnn']
+
+
+
+
