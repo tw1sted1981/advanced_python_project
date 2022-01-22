@@ -68,8 +68,6 @@ def main():
                 startX, startY, width, height = face_detection['box']
                 p1 = Point(startX, startY, img_width, img_height)
                 p2 = Point(startX + width, startY + height, img_width, img_height) 
-                p1.status()
-                p2.status()
 
                 top_left_x, top_left_y         = p1.point_in_nuke()
                 bottom_right_x, bottom_right_y = p2.point_in_nuke()
@@ -80,19 +78,17 @@ def main():
                 nuke_animation[frame]['y2'] = bottom_right_y
 
                 # draw box around face        
-                a = cv2.rectangle(face.image(frame), (startX, startY), (startX + width, startY + height),
-                    (0, 0, 255), 1) 
-                cv2.imshow("Image with face drawn", a)
-                cv2.waitKey(0)
+                #a = cv2.rectangle(face.image(frame), (startX, startY), (startX + width, startY + height),
+                #    (0, 0, 255), 1) 
+                #cv2.imshow("Image with face drawn", a)
+                #cv2.waitKey(10)
+        except :
+            print('no mtcnn data')   
 
-        except: 
-            pass 
-
-        face.remove_image(frame)
-           
+        face.remove_image(frame)           
 
     # create animated curve
-    pprint(nuke_animation)
+    # pprint(nuke_animation)
     x1 = y1 = x2 = y2 = ''
 
     #sorted_dict = dict(sorted(nuke_animation.items()))
