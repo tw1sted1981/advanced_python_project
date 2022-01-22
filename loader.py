@@ -82,8 +82,12 @@ class FrameHandler():
             ]
 
     def add_mtcnn_data(self, frame, mtcnn_data):
-        pprint(mtcnn_data)
-        self.file_sequence_data[self.sequence_name][frame]['mtcnn'] = mtcnn_data 
+        if mtcnn_data:
+            pprint(mtcnn_data)
+            self.file_sequence_data[self.sequence_name][frame]['mtcnn'] = mtcnn_data
+        else:
+            print('no faces found') 
+            self.file_sequence_data[self.sequence_name][frame]['mtcnn'] = []
 
     def get_mtcnn_data(self, frame): 
         return self.file_sequence_data[self.sequence_name][frame]['mtcnn']

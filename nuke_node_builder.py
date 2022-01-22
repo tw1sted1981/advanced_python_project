@@ -32,7 +32,12 @@ def create_crop(nuke_list):
     return nuke_format_helpers['nuke_crop'].format(*nuke_list)
 
 def create_frame_value(frame, value):
-    return nuke_format_helpers['frame_value'].format(frame, value)
+    if value:
+        frame_value = nuke_format_helpers['frame_value'].format(frame, value)
+    else:
+        frame_value = ''
+
+    return frame_value 
 
 def create_animation_curve(curve):
     return nuke_format_helpers['animation_curve'].format(curve)

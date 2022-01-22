@@ -48,11 +48,12 @@ def main():
     start_time = time.time()
 
     first_frame     = face.first_frame()
-    last_frame      = face.last_frame()+1
+    last_frame      = face.last_frame()
+    print(last_frame)
 
     # dict used for animation later on.  
     nuke_animation = defaultdict(lambda: defaultdict(dict))
-    for frame in range(first_frame, last_frame,):
+    for frame in range(first_frame, last_frame+1,):
         print('Processing frame {:>3} of {:<3}'.format(frame, last_frame, ))
         face.load_frame(frame, 100, 100)
 
@@ -61,34 +62,41 @@ def main():
 
         img_width, img_height = face.image_dimensions(frame)
 
-        for face_detection in face.get_mtcnn_data(frame):
-            # compute the (x, y)-coordinates of the bounding box for the
-            startX, startY, width, height = face_detection['box']
-            p1 = Point(startX, startY, img_width, img_height)
-            p2 = Point(startX + width, startY + height, img_width, img_height) 
+        try:
+            for face_detection in face.get_mtcnn_data(frame):
+                # compute the (x, y)-coordinates of the bounding box for the
+                startX, startY, width, height = face_detection['box']
+                p1 = Point(startX, startY, img_width, img_height)
+                p2 = Point(startX + width, startY + height, img_width, img_height) 
+                p1.status()
+                p2.status()
 
-            top_left_x, top_left_y         = p1.point()
-            bottom_right_x, bottom_right_y = p2.point()
+                top_left_x, top_left_y         = p1.point_in_nuke()
+                bottom_right_x, bottom_right_y = p2.point_in_nuke()
 
-            nuke_animation[frame]['x1'] = top_left_x
-            nuke_animation[frame]['y1'] = top_left_y
-            nuke_animation[frame]['x2'] = bottom_right_x
-            nuke_animation[frame]['y2'] = bottom_right_y
+                nuke_animation[frame]['x1'] = top_left_x
+                nuke_animation[frame]['y1'] = top_left_y
+                nuke_animation[frame]['x2'] = bottom_right_x
+                nuke_animation[frame]['y2'] = bottom_right_y
 
-            # draw box around face        
-            a = cv2.rectangle(face.image(frame), (startX, startY), (startX + width, startY + height),
-                (0, 0, 255), 1) 
-            cv2.imshow("Image with face drawn", a)
-            cv2.waitKey(2)
-            
-            face.remove_image(frame)
+                # draw box around face        
+                a = cv2.rectangle(face.image(frame), (startX, startY), (startX + width, startY + height),
+                    (0, 0, 255), 1) 
+                cv2.imshow("Image with face drawn", a)
+                cv2.waitKey(0)
+
+        except: 
+            pass 
+
+        face.remove_image(frame)
+           
 
     # create animated curve
     pprint(nuke_animation)
     x1 = y1 = x2 = y2 = ''
 
     #sorted_dict = dict(sorted(nuke_animation.items()))
-    for frame in range(first_frame, last_frame,):
+    for frame in range(first_frame, last_frame+1,):
         logging.info(frame)
         x1 += nnb.create_frame_value(frame, nuke_animation[frame]['x1'])
         y1 += nnb.create_frame_value(frame, nuke_animation[frame]['y1'])
