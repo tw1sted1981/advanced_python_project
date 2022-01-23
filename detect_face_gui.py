@@ -4,6 +4,7 @@ import time
 import logging
 from pprint import pprint
 from collections import defaultdict
+import qdarkstyle
 
 from Qt import QtWidgets, QtGui, QtCore, QtCompat
 
@@ -30,6 +31,9 @@ class MyApp():
         my_app = QtWidgets.QApplication.instance()
         self.clipboard = my_app.clipboard()
 
+
+        my_app.setStyleSheet(qdarkstyle.load_stylesheet())        
+        
         # set default values      
         self.app.lbl_folder_directory.setText(self.sequence_directory)
         self.app.lbl_face.setPixmap(QtGui.QPixmap(path_img.format('lbl_face')))
@@ -137,6 +141,7 @@ class MyApp():
         self.app.lbl_crop.setPlainText(str(self.animated_crop))
 
 def main():  
+    os.environ['QT_API'] = 'pyside2'
     app = QtWidgets.QApplication(sys.argv)
     myApp = MyApp()
     sys.exit(app.exec_())
