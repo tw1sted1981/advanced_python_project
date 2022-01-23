@@ -20,16 +20,19 @@ class MyApp():
         print(TITLE)
         #BUILD local ui path
         path_ui = ("/").join([os.path.dirname(__file__), "ui", TITLE + ".ui"])
+        path_img = os.path.dirname(__file__) + "/img/{}.jpg"
 
         self.execute_folder = os.path.dirname(__file__)
-
         self.sequence_directory = ''
 
 
 
         self.app = QtCompat.loadUi(path_ui)  
+        
+        #self.clipboard = self.app.clipboard()
         # set default values      
         self.app.lbl_folder_directory.setText(self.sequence_directory)
+        self.app.lbl_face.setPixmap(QtGui.QPixmap(path_img.format('lbl_face')))
 
         # create connections
         self.app.btn_select_folder.clicked.connect(self.press_btnSelectFolder)
@@ -42,6 +45,9 @@ class MyApp():
         
         
         self.app.btn_findFaces.clicked.connect(self.findFaces)
+        
+        self.app.btn_copy_to_clipboard.clicked.connect(self.press_btn_copy_to_clipboard)
+        
         
 
         
@@ -63,7 +69,12 @@ class MyApp():
         print(sequences)
         self.list = self.app.sequences_list
         for sequence in sequences:
-                self.list.addItem(str(sequence))              
+                self.list.addItem(str(sequence))  
+
+    def press_btn_copy_to_clipboard(self): 
+        pass
+        #self.app.clipboard().setText(str(animated_crop)) 
+
     
     def findFaces(self):
         face = loader.FrameHandler(self.sequence_directory) 
@@ -135,11 +146,11 @@ class MyApp():
 
         animation_curve_list = [x1_anim, y1_anim, x2_anim, y2_anim]
         animated_crop =nnb.create_crop(animation_curve_list)
-        print(animated_crop)
+        #print(animated_crop)
         log_msg = 'Total time to process was {} '.format(time.time() - start_time)
         self.app.txt_statusLog.appendPlainText(str(log_msg))
-        log_msg = 'Nuke Crop Node \n\n{} '.format(animated_crop)
-        self.app.txt_statusLog.appendPlainText(str(log_msg))
+        #log_msg = 'Nuke Crop Node \n\n{} '.format(animated_crop)
+        #self.app.txt_statusLog.appendPlainText(str(log_msg))
 
         self.app.lbl_crop.setPlainText(str(animated_crop))
 
