@@ -22,6 +22,7 @@ class FrameHandler():
     def print_sequences(self):
         for index, sequence in enumerate(fileseq.findSequencesOnDisk(self.path_to_image_folder)):
             print('{:<3} - {}'.format(index, sequence[index]))
+        return fileseq.findSequencesOnDisk(self.path_to_image_folder)
 
     def user_select_sequence(self):
         # allow the user to select the sequence the object will work with
@@ -85,6 +86,7 @@ class FrameHandler():
         if mtcnn_data:
             pprint(mtcnn_data)
             self.file_sequence_data[self.sequence_name][frame]['mtcnn'] = mtcnn_data
+            return mtcnn_data
         else:
             print('no faces found') 
 

@@ -71,7 +71,7 @@
       <number>50</number>
      </property>
      <item>
-      <widget class="QListView" name="sequences_list"/>
+      <widget class="QListWidget" name="sequences_list"/>
      </item>
     </layout>
    </item>

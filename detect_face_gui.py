@@ -61,41 +61,15 @@ class MyApp():
         face = loader.FrameHandler(self.sequence_directory) 
         sequences = face.print_sequences()
         print(sequences)
-
-        list = self.app.sequences_list
-        model = QtGui.QStandardItemModel(list)
-        #item = QtGui.QStandardItem()
-        foods = [
-        'Cookie dough', # Must be store-bought
-        'Hummus', # Must be homemade
-        'Spaghetti', # Must be saucy
-        'Dal makhani', # Must be spicy
-        'Chocolate whipped cream' # Must be plentiful
-        ]
- 
-        for food in foods:
-            # Create an item with a caption
-            item = QtGui.QStandardItem(food)                
-            # Add a checkbox to it
-            item.setCheckable(True)
-            
-            # Add the item to the model
-            model.appendRow(item)
-
-        list.setModel(model)
-
-
-        for item in sequences:
-            print(dir(self.app.sequences_list))
-
-
-
-
-
-
+        self.list = self.app.sequences_list
+        for sequence in sequences:
+                self.list.addItem(str(sequence))              
+    
     def findFaces(self):
-        face.select_sequence(0)
-
+        face = loader.FrameHandler(self.sequence_directory) 
+        id_of_sequence = (self.app.sequences_list.currentRow())
+        face.select_sequence(id_of_sequence)
+        print(self.app.sequences_list.currentItem())
         # create the detector, using default weights
         detector = MTCNN()
 
