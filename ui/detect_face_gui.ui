@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>535</width>
-    <height>547</height>
+    <height>618</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -19,7 +19,7 @@
   <property name="minimumSize">
    <size>
     <width>535</width>
-    <height>547</height>
+    <height>618</height>
    </size>
   </property>
   <property name="maximumSize">
@@ -61,7 +61,7 @@
         <string/>
        </property>
        <property name="pixmap">
-        <pixmap resource="detect_face_gui.qrc">:/images/IMG_4242.jpg</pixmap>
+        <pixmap resource="detect_face_gui.qrc">:/images/img/lbl_face.jpg</pixmap>
        </property>
        <property name="scaledContents">
         <bool>true</bool>

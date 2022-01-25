@@ -1,5 +1,5 @@
 <RCC>
   <qresource prefix="images">
-    <file>IMG_4242.jpg</file>
+    <file>../img/lbl_face.jpg</file>
   </qresource>
 </RCC>

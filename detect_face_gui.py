@@ -28,11 +28,10 @@ class MyApp():
 
         self.app = QtCompat.loadUi(path_ui)
 
-        my_app = QtWidgets.QApplication.instance()
-        self.clipboard = my_app.clipboard()
+        self.my_app = QtWidgets.QApplication.instance()
+        self.clipboard = self.my_app.clipboard()
 
-
-        my_app.setStyleSheet(qdarkstyle.load_stylesheet())        
+        self.my_app.setStyleSheet(qdarkstyle.load_stylesheet())        
         
         # set default values      
         self.app.lbl_folder_directory.setText(self.sequence_directory)
@@ -58,20 +57,18 @@ class MyApp():
         ## update the sequences_list part now
         face = loader.FrameHandler(self.sequence_directory) 
         sequences = face.print_sequences()
-        print(sequences)
+
         self.list = self.app.sequences_list
         for sequence in sequences:
                 self.list.addItem(str(sequence))  
 
     def press_btn_copy_to_clipboard(self): 
         self.clipboard.setText(str(self.animated_crop))
-        print('copy button clicked')
     
     def findFaces(self):
         face = loader.FrameHandler(self.sequence_directory) 
         id_of_sequence = (self.app.sequences_list.currentRow())
         face.select_sequence(id_of_sequence)
-        print(self.app.sequences_list.currentItem())
 
         # create the detector, using default weights
         detector = MTCNN()
@@ -108,21 +105,16 @@ class MyApp():
                     nuke_animation[frame]['y1'] = top_left_y
                     nuke_animation[frame]['x2'] = bottom_right_x
                     nuke_animation[frame]['y2'] = bottom_right_y
-
-                    # draw box around face        
-                    #a = cv2.rectangle(face.image(frame), (startX, startY), (startX + width, startY + height),
-                    #    (0, 0, 255), 1) 
-                    #cv2.imshow("Image with face drawn", a)
-                    #cv2.waitKey(40)
             except :
                 print('no mtcnn data')   
 
+            self.my_app.processEvents()
+            
             face.remove_image(frame)    
         # create animated curve
 
         x1 = y1 = x2 = y2 = ''
         for frame in range(first_frame, last_frame+1,):
-            logging.info(frame)
             x1 += nnb.create_frame_value(frame, nuke_animation[frame]['x1'])
             y1 += nnb.create_frame_value(frame, nuke_animation[frame]['y1'])
             x2 += nnb.create_frame_value(frame, nuke_animation[frame]['x2'])
@@ -135,7 +127,6 @@ class MyApp():
 
         animation_curve_list = [x1_anim, y1_anim, x2_anim, y2_anim]
         self.animated_crop =nnb.create_crop(animation_curve_list)
-        print(self.animated_crop)
         log_msg = 'Total time to process was {} '.format(time.time() - start_time)
         self.app.txt_statusLog.appendPlainText(str(log_msg))
         self.app.lbl_crop.setPlainText(str(self.animated_crop))
